@@ -3,12 +3,14 @@
 <head>
     <title>Run Club</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
 <body>
-    <h1>Profile</h1>
     <a href='/' class='back-arrow'>
         <i class="fa-solid fa-arrow-left"></i>
     </a>
+    <h1>Profile</h1>
     <img src="{{profile.photo}}" alt="Profile Photo" width="100">
     <p>Name: {{ profile.name }}</p>
     <p>DOB: {{ profile.dob }}</p>

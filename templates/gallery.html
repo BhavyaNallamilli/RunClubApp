@@ -20,36 +20,44 @@
     </a>
     <h1>Gallery</h1>
 
-    <div class="gallery-section">
-        <h2>Weekly Runs</h2>
-        <div class="image-grid">
-            {% for image in weekly_runs %}
-                <div class="image-box">
-                    <img src="{{ url_for('static', filename=image.image_path) }}" alt="Run Image">
+    <div class="gallery-container">
+        <div class="gallery-section top-left">
+            <h2>Weekly Runs</h2>
+            <div class="scroll-container">
+                <div class="image-row">
+                    {% for image in weekly_runs %}
+                        <div class="image-box">
+                            <img src="{{ url_for('static', filename=image.image_path) }}" alt="Run Image">
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            </div>
         </div>
-    </div>
-
-    <div class="gallery-section">
-        <h2>Events</h2>
-        <div class="image-grid">
-            {% for image in events %}
-                <div class="image-box">
-                    <img src="{{ url_for('static', filename=image.image_path) }}" alt="Event Image">
+    
+        <div class="gallery-section middle">
+            <h2>Events</h2>
+            <div class="scroll-container">
+                <div class="image-row">
+                    {% for image in events %}
+                        <div class="image-box">
+                            <img src="{{ url_for('static', filename=image.image_path) }}" alt="Event Image">
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            </div>
         </div>
-    </div>
-
-    <div class="gallery-section">
-        <h2>Sports</h2>
-        <div class="image-grid">
-            {% for image in sports %}
-                <div class="image-box">
-                    <img src="{{ url_for('static', filename=image.image_path) }}" alt="Sport Image">
+    
+        <div class="gallery-section bottom-right">
+            <h2>Sports</h2>
+            <div class="scroll-container">
+                <div class="image-row">
+                    {% for image in sports %}
+                        <div class="image-box">
+                            <img src="{{ url_for('static', filename=image.image_path) }}" alt="Sport Image">
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            </div>
         </div>
     </div>
    

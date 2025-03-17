@@ -164,25 +164,61 @@ html {
     margin-bottom: 5px;
 }
 
-/* Gallery Section */
-.gallery-section {
-    margin-bottom: 30px;
+/* Gallery Container */
+.gallery-container {
+    position: relative;
+    width: 100%;
+    height: 800px; /* Adjust height as needed */
 }
 
-/* Image Grid */
-.image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid */
-    gap: 15px;
-    margin-top: 10px;
+/* Gallery Section */
+.gallery-section {
+    position: absolute;
+    width: 40%; /* Adjust width as needed */
+}
+
+.gallery-section h2 {
+    margin-bottom: 20px; /* Add space between text and images */
+}
+
+/* Top Left */
+.gallery-section.top-left {
+    top: 0;
+    left: 0;
+}
+
+/* Middle */
+.gallery-section.middle {
+    top: 50%;
+    left: 30%;
+    transform: translateY(-50%); /* Center vertically */
+}
+
+/* Bottom Right */
+.gallery-section.bottom-right {
+    bottom: 0;
+    right: 0;
+}
+
+/* Scroll Container */
+.scroll-container {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* Image Row */
+.image-row {
+    display: flex;
 }
 
 /* Image Box */
 .image-box {
     border-radius: 8px;
-    overflow: hidden; /* Clip images to rounded corners */
+    overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
+    margin-right: 15px;
+    width: 200px;
 }
 
 .image-box:hover {
@@ -190,7 +226,8 @@ html {
 }
 
 .image-box img {
-    width: 100%; /* Make images fill the box */
+    width: 100%;
     height: auto;
-    display: block; /* Remove extra space below images */
+    object-fit: contain;
+    display: block;
 }

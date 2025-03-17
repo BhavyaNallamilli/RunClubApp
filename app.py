@@ -1,5 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request,session,redirect,url_for,flash
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 import os   
 
 app=Flask(__name__)
@@ -8,6 +9,18 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'runclub.db')
 db = SQLAlchemy(app)
 
+app.config['SECRET_KEY']='ecd3ab359dcce6b999c1c63981703a3d'
+
+class User(db.Model):
+    id=db.Column(db.Integer, primary_key=True)
+    username=db.Column(db.String(80), unique=True, nullable=False)
+    password_hash=db.Column(db.String(120),nullable=False)
+    def set_password(self,password):
+        self.password_hash=generate_password_hash(password)
+
+    def check_password(self,password):
+        return check_password_hash(self.password_hash,password)
+    
 class Profile(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -73,10 +86,46 @@ class Gallery(db.Model):
 # }
 
 
+@app.route("/login",methods=['GET','POST'])
+def login():
+    if request.method=='POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        user=User.query.filter_by(username=username).first()
+
+        if user and user.check_password(password):
+            session['username'] = username  # Store username in session
+            return redirect(url_for('home'))
+        else:
+            error='Invalid credentials'
+            return render_template('login.html',error=error)
+    return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists', 'error')  # Display error message
+            return render_template('register.html')
+
+        new_user = User(username=username)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash('Registration successful! Please log in.', 'success') # Display success message
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
 
 @app.route("/")
 def home():
     return render_template("home.html")
+
 
 @app.route("/profile")
 def profile_page():
@@ -156,9 +205,17 @@ if __name__=='__main__':
                 image_files = [f for f in os.listdir(category_path) if f.lower().endswith(image_extensions)]
 
                 for image in image_files:
-                    image_path_db = os.path.join('static','gallery', category_folder, image)
+                    image_path_db = f'gallery/{category_folder}/{image}'
                     new_gallery = Gallery(category=category_db, image_path=image_path_db)
                     db.session.add(new_gallery)
 
         db.session.commit()
     app.run(debug=True)
+
+
+
+
+import secrets
+secret_key = secrets.token_hex(16)  # Generate a 32-character hex key
+print(secret_key)  # Copy this key
+
