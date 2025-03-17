@@ -157,7 +157,6 @@ if __name__=='__main__':
 
                 for image in image_files:
                     image_path_db = os.path.join('static','gallery', category_folder, image)
-                    print(image_path_db)
                     new_gallery = Gallery(category=category_db, image_path=image_path_db)
                     db.session.add(new_gallery)
 
