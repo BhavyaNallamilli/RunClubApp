@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sports</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    
+</head>
+<body>
+    <a href='/' class='back-arrow'>
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <a href="/profile" class="profile-icon">
+        <i class="fa-solid fa-user"></i>
+        <span class="tooltip">Profile</span>
+    </a>
+    <h1>Sports</h1>
+    <div class="sports-container">
+        {% for sport in sports %}
+            <div class="sport-box">
+                <h2>{{ sport.name }}</h2>
+                <p>Venue: {{ sport.venue }}</p>
+                <p>Price: ${{ sport.price }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# SQLite database
+*.db
+
+# Virtual environment
+venv/
+
+# OS generated files
+.DS_Store # macOS
+Thumbs.db # Windows
+
+# IDE files
+.idea/ # PyCharm
+*.swp # Vim swap files
+*.swo # Vim swap files
+*.log #log files
+
+# Dependency files
+*.egg-info/
+dist/
+build/

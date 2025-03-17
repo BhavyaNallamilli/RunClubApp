@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upcoming Events</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    
+</head>
+<body>
+    <a href='/' class='back-arrow'>
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <a href="/profile" class="profile-icon">
+        <i class="fa-solid fa-user"></i>
+        <span class="tooltip">Profile</span>
+    </a>
+
+
+    <h1>Events</h1>
+    <div class="events-container">
+        {% if upcoming_events %}
+            {% for event in upcoming_events %}
+                <div class="event-box">
+                    <h2>{{ event.theme }}</h2>
+                    <p>Date: {{ event.date }}</p>
+                    <p>Venue: {{ event.venue }}</p>
+                    <p>Price: ${{ event.price }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Stay tuned for upcoming events!</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

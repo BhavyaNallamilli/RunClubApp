@@ -1,0 +1,57 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    
+</head>
+<body>
+    <a href='/' class='back-arrow'>
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+
+    <a href="/profile" class="profile-icon">
+        <i class="fa-solid fa-user"></i>
+        <span class="tooltip">Profile</span>
+    </a>
+    <h1>Gallery</h1>
+
+    <div class="gallery-section">
+        <h2>Weekly Runs</h2>
+        <div class="image-grid">
+            {% for image in weekly_runs %}
+                <div class="image-box">
+                    <img src="{{ url_for('static', filename=image.image_path) }}" alt="Run Image">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="gallery-section">
+        <h2>Events</h2>
+        <div class="image-grid">
+            {% for image in events %}
+                <div class="image-box">
+                    <img src="{{ url_for('static', filename=image.image_path) }}" alt="Event Image">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="gallery-section">
+        <h2>Sports</h2>
+        <div class="image-grid">
+            {% for image in sports %}
+                <div class="image-box">
+                    <img src="{{ url_for('static', filename=image.image_path) }}" alt="Sport Image">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+   
+</body>
+</html>

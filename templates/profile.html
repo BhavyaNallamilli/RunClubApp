@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Run Club</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Profile</h1>
+    <a href='/' class='back-arrow'>
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <img src="{{profile.photo}}" alt="Profile Photo" width="100">
+    <p>Name: {{ profile.name }}</p>
+    <p>DOB: {{ profile.dob }}</p>
+    <p>Instagram: {{ profile.instagram }}</p>
+    <p>Bio: {{ profile.bio }}</p>
+
+</body>
+</html>
