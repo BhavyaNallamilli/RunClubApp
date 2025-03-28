@@ -129,7 +129,7 @@ html {
     color: white;
     text-decoration: none;
 }
-.runs-container, .events-container, .sports-container {
+.runs-container, .events-container, .sports-container , .payments-container{
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -138,7 +138,7 @@ html {
 }
 
 /* Common Box Styles */
-.run-box, .event-box, .sport-box {
+.run-box, .event-box, .sport-box, .payment-box {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 20px;
@@ -149,19 +149,47 @@ html {
 }
 
 /* Common Box Hover Effect */
-.run-box:hover, .event-box:hover, .sport-box:hover {
+.run-box:hover, .event-box:hover, .sport-box:hover ,.payment-box:hover{
     transform: translateY(-5px);
 }
 
 /* Common Box Heading Styles */
-.run-box h2, .event-box h2, .sport-box h2 {
+.run-box h2, .event-box h2, .sport-box h2 ,.payment-box h2{
     font-size: 1.5rem;
     margin-bottom: 10px;
 }
 
 /* Common Box Paragraph Styles */
-.run-box p, .event-box p, .sport-box p {
+.run-box p, .event-box p, .sport-box p, .payment-box p{
     margin-bottom: 5px;
+}
+
+
+/* Payment Options Container */
+.payment-options {
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* Payment Button Styles */
+.payment-button {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 5px;
+    text-decoration: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+/* Paytm Button Style */
+.paytm {
+    background-color: #00ADEF;
+}
+
+/* Google Pay Button Style */
+.gpay {
+    background-color: #4285F4;
 }
 
 /* Gallery Container */
@@ -231,3 +259,44 @@ html {
     object-fit: contain;
     display: block;
 }
+
+.drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.drop-zone.dragover {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+}
+
+.profile-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 20px;
+    border: 2px solid #ddd;
+}
+
+.profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-info {
+    text-align: left;
+}
+
+.profile-info p {
+    margin: 8px 0;
+}
+
+.profile-info strong {
+    display: inline-block;
+    width: 120px;}
+

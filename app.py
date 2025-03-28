@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request,session,redirect,url_for,flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 import os   
 
 app=Flask(__name__)
@@ -8,6 +9,15 @@ app=Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'runclub.db')
 db = SQLAlchemy(app)
+UPLOAD_FOLDER = os.path.join('static','profile_photos')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'} #Allowed file extensions
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+print(f"Upload Folder: {app.config['UPLOAD_FOLDER']}")
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 app.config['SECRET_KEY']='ecd3ab359dcce6b999c1c63981703a3d'
 
@@ -86,20 +96,20 @@ class Gallery(db.Model):
 # }
 
 
-@app.route("/login",methods=['GET','POST'])
+@app.route("/login", methods=['GET', 'POST'])
 def login():
-    if request.method=='POST':
+    if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        
-        user=User.query.filter_by(username=username).first()
+
+        user = User.query.filter_by(username=username).first()
 
         if user and user.check_password(password):
-            session['username'] = username  # Store username in session
-            return redirect(url_for('home'))
+            session['username'] = username
+            return redirect(url_for('home')) 
         else:
-            error='Invalid credentials'
-            return render_template('login.html',error=error)
+            error = 'Invalid credentials'
+            return render_template('login.html', error=error)
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -109,7 +119,7 @@ def register():
         password = request.form['password']
 
         if User.query.filter_by(username=username).first():
-            flash('Username already exists', 'error')  # Display error message
+            flash('Username already exists', 'error')
             return render_template('register.html')
 
         new_user = User(username=username)
@@ -117,21 +127,82 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        flash('Registration successful! Please log in.', 'success') # Display success message
+        # Handle photo upload
+        if 'photo' in request.files:
+            print("photo in request files")
+            file = request.files['photo']
+            if file and allowed_file(file.filename):
+                print("allowed")
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'])
+                file.save(filepath)
+                photo_path = os.path.join(app.config['UPLOAD_FOLDER'], filename) #Path to store in the database.
+            else:
+                print("not allowed")
+                photo_path = None 
+        else:
+            print("photo not in request files")
+            photo_path = None 
+
+        # Create Profile for the new user
+        new_profile = Profile(id=new_user.id, name=request.form['name'], photo=photo_path, dob=request.form['dob'], instagram=request.form['instagram'])
+        db.session.add(new_profile)
+        db.session.commit()
+
+        flash('Registration successful! Please log in.', 'success')
         return redirect(url_for('login'))
 
     return render_template('register.html')
 
-@app.route("/")
-def home():
-    return render_template("home.html")
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
 
+@app.route("/")
+def home(): 
+    if 'username' in session:
+        username = session['username']
+        user = User.query.filter_by(username=username).first()
+        if user:
+            profile = Profile.query.filter_by(id=user.id).first()
+            return render_template('home.html', profile=profile)
+        else:
+            return render_template('home.html', profile=None)
+    else:
+        return redirect(url_for('login'))
 
 @app.route("/profile")
 def profile_page():
-    with app.app_context():
-        profile = Profile.query.all()
-    return render_template("profile.html", profile=profile)
+    if 'username' in session:
+        username = session['username']
+        user = User.query.filter_by(username=username).first()
+        if user:
+            profile = Profile.query.filter_by(id=user.id).first()
+            if request.method == 'POST': #add this section to update or create a profile.
+                name = request.form.get('name')
+                dob = request.form.get('dob')
+                instagram = request.form.get('instagram')
+                bio = request.form.get('bio')
+                #Handle photo upload here.
+
+                if profile:
+                    profile.name = name
+                    profile.dob = dob
+                    profile.instagram = instagram
+                    profile.bio = bio
+                else:
+                    profile = Profile(id=user.id,name=name, dob=dob, instagram=instagram, bio=bio)
+                    db.session.add(profile)
+                db.session.commit()
+                return redirect(url_for('profile_page'))
+
+            return render_template('profile.html', profile=profile,username=username)
+        else:
+            return redirect(url_for('login'))
+    else:
+        return redirect(url_for('login'))
+
 
 @app.route("/runs")
 def runs_page():
@@ -158,10 +229,27 @@ def gallery_page():
     sports=Gallery.query.filter_by(category="sports").all()
     return render_template("gallery.html", weekly_runs=weekly_runs,events=events,sports=sports)
 
+@app.route("/payments")
+def payments_page():
+    with app.app_context():
+        events = Event.query.all()
+    return render_template("payments.html", events=events)
+
+@app.route('/payment_methods')
+def payment_method():
+    return render_template('payment_methods.html')
+
+@app.route('/paytm_mode')
+def paytm_payment():
+    return f"Redirecting to Paytm"
+
+@app.route('/gpay_mode')
+def gpay_payment():
+    return f"Redirecting to Google Pay"
 
 if __name__=='__main__':
     with app.app_context():
-        # db.create_all()
+        db.create_all()
         # Populate Profile
         if not Profile.query.first():  # Check if profile exists
             new_profile = Profile(name="Run Club Member", photo="placeholder.jpg", dob="YYYY-MM-DD", instagram="@runclub", bio="Join our running community!")
@@ -215,7 +303,4 @@ if __name__=='__main__':
 
 
 
-import secrets
-secret_key = secrets.token_hex(16)  # Generate a 32-character hex key
-print(secret_key)  # Copy this key
 

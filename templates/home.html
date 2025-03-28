@@ -6,36 +6,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
-<body>
-    <h1>Welcome to Runclub!</h1>
-    <a href="/profile" class="profile-icon">
-        <i class="fa-solid fa-user"></i>
-        <span class="tooltip">Profile</span>
-    </a>
-
-    <div class="menu-container">
-        <i class="fa-solid fa-bars menu-icon"></i>
-        <ul class="menu-list">
-            <li><a href="/runs">Runs</a></li>
-            <li><a href="/events">Events</a></li>
-            <li><a href="/sports">Sports</a></li>
-            <li><a href="/gallery">Gallery</a></li>
-            <li><a href="/tracker">Tracker</a></li>
-        </ul>
-    </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const menuIcon = document.querySelector(".menu-icon");
-            const menuList = document.querySelector(".menu-list");
-
-            // Toggle menu visibility on icon click
-            menuIcon.addEventListener("click", function() {
-                menuList.classList.toggle("show-menu");
+    <body>
+        <h1>Welcome to Runclub!</h1>
+    
+        {% if profile %}
+            <a href="/profile" class="profile-icon">
+                <i class="fa-solid fa-user"></i>
+                <span class="tooltip">Profile</span>
+            </a>
+        {% else %}
+            <a href="/profile" class="profile-icon">
+                <i class="fa-solid fa-user"></i>
+                <span class="tooltip">Create Profile</span>
+            </a>
+        {% endif %}
+    
+        <div class="menu-container">
+            <i class="fa-solid fa-bars menu-icon"></i>
+            <ul class="menu-list">
+                <li><a href="/runs">Runs</a></li>
+                <li><a href="/events">Events</a></li>
+                <li><a href="/sports">Sports</a></li>
+                <li><a href="/gallery">Gallery</a></li>
+                <li><a href="/tracker">Tracker</a></li>
+                <li><a href="/payments">Payments</a></li>
+                <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+            </ul>
+        </div>
+    
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const menuIcon = document.querySelector(".menu-icon");
+                const menuList = document.querySelector(".menu-list");
+    
+                menuIcon.addEventListener("click", function() {
+                    menuList.classList.toggle("show-menu");
+                });
             });
-        });
-    </script>
-
-
+        </script>
     </body>
 </html>

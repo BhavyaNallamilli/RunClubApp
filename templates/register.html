@@ -8,7 +8,7 @@
     <div class="login-container">
         <h1>Register</h1>
         <div class="login-form">
-            <form method="POST" action="/register">
+            <form method="POST" action="/register" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" required>
@@ -17,9 +17,33 @@
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" required>
                 </div>
-                 <button type="submit">Register</button>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="photo">Photo:</label>
+                    <div id="drop-zone" class="drop-zone">
+                        <p>Drag and drop an image here, or click to select one</p>
+                        <input type="file" id="file-input" name="photo" accept="image/*">
+                    </div>
+                    <img id="preview" style="max-width: 200px; display: none;">
+                </div>
+                <div class="form-group">
+                    <label for="dob">Date of Birth:</label>
+                    <input type="text" id="dob" name="dob">
+                </div>
+                <div class="form-group">
+                    <label for="instagram">Instagram:</label>
+                    <input type="text" id="instagram" name="instagram">
+                </div>
+                <div class="form-group">
+                    <label for="bio">Bio:</label>
+                    <textarea id="bio" name="bio"></textarea>
+                </div>
+                <button type="submit">Register</button>
             </form>
-            <p>Already have an account? <a href="/login">Login</a></p>
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
         </div>
     </div>
 </body>
