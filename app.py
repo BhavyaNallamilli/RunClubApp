@@ -2,7 +2,9 @@ from flask import Flask, render_template, request,session,redirect,url_for,flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+import qrcode
 import os   
+from PIL import Image
 
 app=Flask(__name__)
 
@@ -10,13 +12,31 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'runclub.db')
 db = SQLAlchemy(app)
 UPLOAD_FOLDER = os.path.join('static','profile_photos')
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'} #Allowed file extensions
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'} 
+ADMIN_UPI_ID='9620861165@pthdfc'
+QR_CODE_FOLDER=os.path.join('static','qrcodes')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
 print(f"Upload Folder: {app.config['UPLOAD_FOLDER']}")
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def generate_upi_qrcode(upi_id,filename):
+    qr=qrcode.QRCode(version=1,error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,)
+    
+    qr.add_data(f"upi://pay?pa={upi_id}")
+    qr.make(fit=True)
+
+    img=qr.make_image(fill_color='black',back_color='white')
+    filepath=os.path.join(QR_CODE_FOLDER,filename)
+    img.save(filepath)
+    return url_for('static',filename=f'qrcodes/{filename}')
+
 
 
 app.config['SECRET_KEY']='ecd3ab359dcce6b999c1c63981703a3d'
@@ -203,7 +223,6 @@ def profile_page():
     else:
         return redirect(url_for('login'))
 
-
 @app.route("/runs")
 def runs_page():
     with app.app_context():
@@ -213,8 +232,8 @@ def runs_page():
 @app.route("/events")
 def events_page():
     with app.app_context():
-        events = Event.query.all()
-    return render_template("events.html", events=events)
+        upcoming_events = Event.query.all()
+    return render_template("events.html", upcoming_events=upcoming_events)
 
 @app.route("/sports")
 def sports_page():
@@ -229,23 +248,14 @@ def gallery_page():
     sports=Gallery.query.filter_by(category="sports").all()
     return render_template("gallery.html", weekly_runs=weekly_runs,events=events,sports=sports)
 
-@app.route("/payments")
-def payments_page():
-    with app.app_context():
-        events = Event.query.all()
-    return render_template("payments.html", events=events)
+@app.route('/payments_qr/<int:event_id>')
+def payments_qr(event_id):
+    event = Event.query.get(event_id) #get the event object.
+    qr_filename = f'upi_qr_{event_id}.png'
+    qr_code_url = generate_upi_qrcode(ADMIN_UPI_ID, qr_filename)
+    return render_template('payments_qr.html', event=event, qr_code_url=qr_code_url) #pass event object.
 
-@app.route('/payment_methods')
-def payment_method():
-    return render_template('payment_methods.html')
 
-@app.route('/paytm_mode')
-def paytm_payment():
-    return f"Redirecting to Paytm"
-
-@app.route('/gpay_mode')
-def gpay_payment():
-    return f"Redirecting to Google Pay"
 
 if __name__=='__main__':
     with app.app_context():

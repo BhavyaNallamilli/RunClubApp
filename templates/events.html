@@ -26,6 +26,9 @@
                     <p>Date: {{ event.date }}</p>
                     <p>Venue: {{ event.venue }}</p>
                     <p>Price: ${{ event.price }}</p>
+                    <div class="payment-options">
+                        <a href="{{ url_for('payments_qr', event_id=event.id) }}" class="pay-button">Pay</a>
+                    </div>
                 </div>
             {% endfor %}
         {% else %}
