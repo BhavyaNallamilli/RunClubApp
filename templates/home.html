@@ -29,6 +29,12 @@
                 <li><a href="/sports">Sports</a></li>
                 <li><a href="/gallery">Gallery</a></li>
                 <li><a href="/tracker">Tracker</a></li>
+                {% if current_user.is_authenticated and current_user.role == 'admin-team' %}
+                    <li><a href="/add_event">Add Event</a></li>
+                    <li><a href="/add_gallery">Add Photos</a></li>
+                    <li><a href="/add_run">Add Runs</a></li>
+                    <li><a href="/add_sport">Add Sports</a></li>
+                {% endif %}
                 <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
             </ul>
         </div>

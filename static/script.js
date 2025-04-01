@@ -40,3 +40,48 @@ if (!document.head.querySelector("#fade-out-style")) {
 window.addEventListener('load', function() {
     document.body.classList.remove('fade-out');
 });
+
+
+
+//tracker
+
+// tracker_script.js
+const runItems = document.getElementById('run-items').querySelectorAll('li');
+let selectedWeeks = [];
+
+runItems.forEach(item => {
+    item.addEventListener('click', () => {
+        const week = item.dataset.week;
+        if (selectedWeeks.includes(week)) {
+            selectedWeeks = selectedWeeks.filter(w => w !== week);
+            item.classList.remove('selected');
+        } else {
+            selectedWeeks.push(week);
+            item.classList.add('selected');
+        }
+        sendSelectedRuns(selectedWeeks); // Send data to Flask
+    });
+});
+
+function sendSelectedRuns(selectedWeeks) {
+    fetch('/save_selected_runs', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ selectedWeeks: selectedWeeks }),
+    })
+    .then(response => response.json())
+    .then(data => console.log(data));
+}
+
+window.addEventListener('load', function() {
+    // Get the user's runs from the HTML and mark them as selected.
+    let userRunsIds = JSON.parse(document.getElementById('user_runs_ids').textContent);
+    runItems.forEach(item => {
+        if(userRunsIds.includes(parseInt(item.dataset.runId))){
+            item.classList.add('selected');
+            selectedWeeks.push(item.dataset.week);
+        }
+    });
+});

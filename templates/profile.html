@@ -14,10 +14,11 @@
         <h1>Profile</h1>
         <div class="profile-photo">
             {% if profile and profile.photo %}
-                <img src="{{ url_for('static', filename=profile.photo) }}" alt="Profile Photo">
+            <img src="{{ profile.photo.split('/')[-1] }}" alt="Profile Photo">
             {% else %}
                 <p>No profile photo available.</p>
             {% endif %}
+            print({{ profile.photo.split('/')[-1] }})
         </div>
         <div class="profile-info">
             <p><strong>Username:</strong> {{ username }}</p>

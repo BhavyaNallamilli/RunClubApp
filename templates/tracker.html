@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Run Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <a href='/' class='back-arrow'>
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <a href="/profile" class="profile-icon">
+        <i class="fa-solid fa-user"></i>
+        <span class="tooltip">Profile</span>
+    </a>
+
+    <h1>Select and track your runs!</h1>
+    <div class="tracker-container">
+        <div id="runs-list">
+            <h2>Runs:</h2>
+            <ul id="run-items">
+                {% for run in runs %}
+                <li data-week="{{ run.week }}" data-run-id="{{run.id}}">{{ run.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <p id="user_runs_ids" style="display: none;">{{ user_runs_ids|tojson }}</p>    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

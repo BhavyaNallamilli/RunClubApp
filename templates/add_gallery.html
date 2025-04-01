@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Gallery Photos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Add Gallery Photos</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="category">Category:</label>
+        <select name="category" id="category">
+            <option value="weekly_runs">Weekly Runs</option>
+            <option value="events">Events</option>
+            <option value="sports">Sports</option>
+        </select><br><br>
+
+        <label for="images">Select Images:</label>
+        <input type="file" name="images" id="images" multiple><br><br>
+
+        <input type="submit" value="Upload">
+    </form>
+</body>
+</html>

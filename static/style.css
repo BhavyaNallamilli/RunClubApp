@@ -300,3 +300,34 @@ html {
     display: inline-block;
     width: 120px;}
 
+/*tracker*/
+
+.tracker-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#weeks-list, #runs-list {
+    width: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-left: 20px;
+    text-align: left;
+}
+
+#week-items, #run-items {
+    list-style: none;
+    padding: 0;
+}
+
+#week-items li, #run-items li {
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+#week-items li.selected, #run-items li.selected {
+    background-color: green;
+}
