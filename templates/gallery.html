@@ -22,10 +22,10 @@
 
     <div class="gallery-container">
         <div class="gallery-section top-left">
-            <h2>Weekly Runs</h2>
+            <h2>Runs</h2>
             <div class="scroll-container">
                 <div class="image-row">
-                    {% for image in weekly_runs %}
+                    {% for image in Runs %}
                         <div class="image-box">
                             <img src="{{ url_for('static', filename=image.image_path) }}" alt="Run Image">
                         </div>
@@ -38,7 +38,7 @@
             <h2>Events</h2>
             <div class="scroll-container">
                 <div class="image-row">
-                    {% for image in events %}
+                    {% for image in Events %}
                         <div class="image-box">
                             <img src="{{ url_for('static', filename=image.image_path) }}" alt="Event Image">
                         </div>
@@ -51,7 +51,7 @@
             <h2>Sports</h2>
             <div class="scroll-container">
                 <div class="image-row">
-                    {% for image in sports %}
+                    {% for image in Sports %}
                         <div class="image-box">
                             <img src="{{ url_for('static', filename=image.image_path) }}" alt="Sport Image">
                         </div>

@@ -3,15 +3,24 @@
 <head>
     <title>Add Gallery Photos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
 <body>
+    <a href='/' class='back-arrow'>
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <a href="/profile" class="profile-icon">
+        <i class="fa-solid fa-user"></i>
+        <span class="tooltip">Profile</span>
+    </a>
     <h1>Add Gallery Photos</h1>
     <form method="POST" enctype="multipart/form-data">
         <label for="category">Category:</label>
         <select name="category" id="category">
-            <option value="weekly_runs">Weekly Runs</option>
-            <option value="events">Events</option>
-            <option value="sports">Sports</option>
+            <option value="Runs">Runs</option>
+            <option value="Events">Events</option>
+            <option value="Sports">Sports</option>
         </select><br><br>
 
         <label for="images">Select Images:</label>

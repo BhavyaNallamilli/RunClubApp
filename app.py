@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import qrcode
 import os
+import re
 from PIL import Image
 from flask_login import current_user, LoginManager, UserMixin, login_required, login_user, logout_user
 from functools import wraps
@@ -93,6 +94,10 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def is_valid_date(date_string):
+    return re.match(r"^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/\d{4}$", date_string)
+
+
 def generate_upi_qrcode(upi_id,filename):
     qr=qrcode.QRCode(version=1,error_correction=qrcode.constants.ERROR_CORRECT_L,
         box_size=10,
@@ -152,6 +157,10 @@ def register():
         name = request.form['name']
         dob = request.form['dob']
         instagram = request.form['instagram']
+
+        if dob and not is_valid_date(dob): #dob is optional, but if present, validate.
+            flash('Invalid date of birth format. Please use dd/mm/yyyy.', 'error')
+            return render_template('register.html')
 
         # Call the register_user function
         message, status_code = register_user(username, password, role, name, dob, instagram)
@@ -260,10 +269,11 @@ def save_selected_runs():
 
 @app.route("/gallery")
 def gallery_page():
-    weekly_runs = Gallery.query.filter_by(category="weekly_runs").all()
-    events = Gallery.query.filter_by(category="events").all()
-    sports = Gallery.query.filter_by(category="sports").all()
-    return render_template("gallery.html", weekly_runs=weekly_runs, events=events, sports=sports)
+    Runs = Gallery.query.filter_by(category="Runs").all()
+    Events = Gallery.query.filter_by(category="Events").all()
+    Sports = Gallery.query.filter_by(category="Sports").all()
+    return render_template("gallery.html", Runs=Runs, Events=Events, Sports=Sports)
+
 
 @app.route('/payments_qr/<int:event_id>')
 def payments_qr(event_id):
@@ -302,6 +312,10 @@ def add_event():
         date = request.form.get('date')
         theme = request.form.get('theme')
 
+        if not is_valid_date(date):
+            flash('Invalid date format. Please use dd/mm/yyyy.', 'error')
+            return render_template('add_event.html')
+
         new_event = Event(name=name, price=price, venue=venue, date=date, theme=theme)
         db.session.add(new_event)
         db.session.commit()
@@ -332,7 +346,7 @@ def add_sport():
 def add_gallery():
     if request.method == 'POST':
         category = request.form.get('category')
-        files = request.files.getlist('images')  # Get a list of files
+        files = request.files.getlist('images')  
 
         if not files:
             flash('No files selected', 'danger')
@@ -362,26 +376,6 @@ if __name__ == '__main__':
         if not Profile.query.first():
             new_profile = Profile(name="Run Club Member", photo="placeholder.jpg", dob="YYYY-MM-DD", instagram="@runclub", bio="Join our running community!")
             db.session.add(new_profile)
-
-        # Populate Gallery (Dynamic)
-        gallery_base_folder = os.path.join(basedir, 'static', 'gallery')
-
-        categories = {
-            'weekly_runs': 'runs',
-            'events': 'events',
-            'sports': 'sports'
-        }
-
-        for category_db, category_folder in categories.items():
-            category_path = os.path.join(gallery_base_folder, category_folder)
-            if os.path.exists(category_path):
-                image_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp')
-                image_files = [f for f in os.listdir(category_path) if f.lower().endswith(image_extensions)]
-
-                for image in image_files:
-                    image_path_db = f'gallery/{category_folder}/{image}'
-                    new_gallery = Gallery(category=category_db, image_path=image_path_db)
-                    db.session.add(new_gallery)
 
         db.session.commit()
     app.run(debug=True)
