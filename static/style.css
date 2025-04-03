@@ -331,3 +331,77 @@ html {
 #week-items li.selected, #run-items li.selected {
     background-color: green;
 }
+
+/*all pages form boxes*/
+form {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%; 
+    max-width: 600px;
+    margin: 20px auto; 
+    text-align: left;
+    display: block; 
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    color: white;
+    font-weight: bold;
+}
+
+form select,
+form input[type="file"],
+form input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    box-sizing: border-box;
+}
+
+form input[type="file"] {
+    padding-top: 8px;
+}
+
+form input[type="submit"] {
+    background-color: #F67280;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form input[type="submit"]:hover {
+    background-color: #C06C84;
+}
+
+/* Responsive Form */
+@media (max-width: 768px) {
+    form {
+        padding: 20px;
+    }
+}
+
+form select option {
+    color: black; /* Or any color that contrasts with the select's background */
+}
+
+
+/*home list color coding*/
+.menu-list li.group1 a {
+    color: white; /* Change to your desired color for the first 5 */
+}
+
+.menu-list li.group2 a {
+    color: pink; /* Change to your desired color for the next 5 */
+}
+
+.menu-list li.logout a {
+    color: maroon; /* Change to your desired color for LOGOUT */
+    font-weight: bold; /* Optional: Make LOGOUT stand out */
+}

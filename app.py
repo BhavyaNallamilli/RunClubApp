@@ -44,6 +44,7 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+#Database Models
 class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -79,7 +80,9 @@ class Gallery(db.Model):
     category = db.Column(db.String(100))
     image_path = db.Column(db.String(200))
 
-
+class UPI(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    upi_id = db.Column(db.String(100), unique=True)
 
 def admin_required(f):
     @wraps(f)
@@ -98,18 +101,23 @@ def is_valid_date(date_string):
     return re.match(r"^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/\d{4}$", date_string)
 
 
-def generate_upi_qrcode(upi_id,filename):
-    qr=qrcode.QRCode(version=1,error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,)
-    
+def generate_upi_qrcode():
+    upi_record = UPI.query.first()
+    if not upi_record:
+        return None 
+    upi_id = upi_record.upi_id
+    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L,
+                       box_size=10,
+                       border=4, )
+
     qr.add_data(f"upi://pay?pa={upi_id}")
     qr.make(fit=True)
 
-    img=qr.make_image(fill_color='black',back_color='white')
-    filepath=os.path.join(QR_CODE_FOLDER,filename)
+    img = qr.make_image(fill_color='black', back_color='white')
+    filename = 'upi_qr.png' # Always use the same filename.
+    filepath = os.path.join(QR_CODE_FOLDER, filename)
     img.save(filepath)
-    return url_for('static',filename=f'qrcodes/{filename}')
+    return url_for('static', filename=f'qrcodes/{filename}')
 
 def register_user(username, password, role, name, dob, instagram):
     # ... (your register_user function code) ...
@@ -278,9 +286,29 @@ def gallery_page():
 @app.route('/payments_qr/<int:event_id>')
 def payments_qr(event_id):
     event = Event.query.get(event_id)
-    qr_filename = f'upi_qr_{event_id}.png'
-    qr_code_url = generate_upi_qrcode(ADMIN_UPI_ID, qr_filename)
+    qr_code_url = generate_upi_qrcode()
     return render_template('payments_qr.html', event=event, qr_code_url=qr_code_url)
+
+@app.route('/update_upi', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def update_upi():
+    upi_record = UPI.query.first()
+    if request.method == 'POST':
+        new_upi_id = request.form.get('upi_id')
+        if upi_record:
+            upi_record.upi_id = new_upi_id
+        else:
+            new_upi = UPI(upi_id=new_upi_id)
+            db.session.add(new_upi)
+        db.session.commit()
+        flash('UPI ID updated successfully!', 'success')
+        # delete the previous QR code.
+        filename = os.listdir(QR_CODE_FOLDER)[0] if os.listdir(QR_CODE_FOLDER) else None
+        if filename:
+          os.remove(os.path.join(QR_CODE_FOLDER, filename))
+        return redirect(url_for('update_upi'))
+    return render_template('update_upi.html', upi_record=upi_record)
 
 #ADMIN-ONLY
 @app.route('/add_run', methods=['GET', 'POST'])
@@ -371,6 +399,12 @@ def add_gallery():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+
+        os.makedirs(os.path.join('static', 'gallery', 'Runs'), exist_ok=True)
+        os.makedirs(os.path.join('static', 'gallery', 'Events'), exist_ok=True)
+        os.makedirs(os.path.join('static', 'gallery', 'Sports'), exist_ok=True)
+        os.makedirs(os.path.join('static', 'profile_photos'), exist_ok=True)
+        os.makedirs(os.path.join('static', 'qrcodes'), exist_ok=True)
 
         # Populate Profile
         if not Profile.query.first():

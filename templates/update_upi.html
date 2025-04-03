@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Payment QR Code</title>
+    <title>Update UPI ID</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
 <body>
-    <a href='/events' class='back-arrow'>
+    <a href='/' class='back-arrow'>
         <i class="fa-solid fa-arrow-left"></i>
     </a>
     <a href="/profile" class="profile-icon">
         <i class="fa-solid fa-user"></i>
         <span class="tooltip">Profile</span>
     </a>
-    <h1>Payment QR Code for {{ event.name }}</h1>
-    <p>Please scan the following QR code to make a payment for this event.</p>
-    <img src="{{ qr_code_url }}" alt="UPI QR Code">
-    <p>Event Price: {{ event.price }}</p>
-
+    <h1>Update UPI ID</h1>
+    <form method="POST">
+        <label for="upi_id">UPI ID:</label>
+        <input type="text" name="upi_id" id="upi_id" value="{{ upi_record.upi_id if upi_record else '' }}">
+        <input type="submit" value="Update">
+    </form>
 </body>
 </html>

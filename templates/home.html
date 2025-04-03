@@ -5,49 +5,52 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <h1>Welcome to Runclub!</h1>
-    
-        {% if profile %}
-            <a href="/profile" class="profile-icon">
-                <i class="fa-solid fa-user"></i>
-                <span class="tooltip">Profile</span>
-            </a>
-        {% else %}
-            <a href="/profile" class="profile-icon">
-                <i class="fa-solid fa-user"></i>
-                <span class="tooltip">Create Profile</span>
-            </a>
-        {% endif %}
-    
-        <div class="menu-container">
-            <i class="fa-solid fa-bars menu-icon"></i>
-            <ul class="menu-list">
-                <li><a href="/runs">Runs</a></li>
-                <li><a href="/events">Events</a></li>
-                <li><a href="/sports">Sports</a></li>
-                <li><a href="/gallery">Gallery</a></li>
-                <li><a href="/tracker">Tracker</a></li>
-                {% if current_user.is_authenticated and current_user.role == 'admin-team' %}
-                    <li><a href="/add_event">Add Event</a></li>
-                    <li><a href="/add_gallery">Add Photos</a></li>
-                    <li><a href="/add_run">Add Runs</a></li>
-                    <li><a href="/add_sport">Add Sports</a></li>
-                {% endif %}
-                <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
-            </ul>
-        </div>
-    
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const menuIcon = document.querySelector(".menu-icon");
-                const menuList = document.querySelector(".menu-list");
-    
-                menuIcon.addEventListener("click", function() {
-                    menuList.classList.toggle("show-menu");
-                });
+</head>
+<body>
+    <h1>Welcome to Runclub!</h1>
+
+    {% if profile %}
+        <a href="/profile" class="profile-icon">
+            <i class="fa-solid fa-user"></i>
+            <span class="tooltip">Profile</span>
+        </a>
+    {% else %}
+        <a href="/profile" class="profile-icon">
+            <i class="fa-solid fa-user"></i>
+            <span class="tooltip">Create Profile</span>
+        </a>
+    {% endif %}
+
+    <div class="menu-container">
+        <i class="fa-solid fa-bars menu-icon"></i>
+        <ul class="menu-list">
+            <li class="group1"><a href="/runs">Runs</a></li>
+            <li class="group1"><a href="/events">Events</a></li>
+            <li class="group1"><a href="/sports">Sports</a></li>
+            <li class="group1"><a href="/gallery">Gallery</a></li>
+            <li class="group1"><a href="/tracker">Tracker</a></li>
+
+            {% if current_user.is_authenticated and current_user.role == 'admin-team' %}
+                <li class="group2"><a href="/add_event">Add Event</a></li>
+                <li class="group2"><a href="/add_gallery">Add Photos</a></li>
+                <li class="group2"><a href="/add_run">Add Runs</a></li>
+                <li class="group2"><a href="/add_sport">Add Sports</a></li>
+                <li class="group2"><a href="/update_upi">Update UPI</a></li>
+            {% endif %}
+
+            <li class="logout"><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const menuIcon = document.querySelector(".menu-icon");
+            const menuList = document.querySelector(".menu-list");
+
+            menuIcon.addEventListener("click", function() {
+                menuList.classList.toggle("show-menu");
             });
-        </script>
-    </body>
+        });
+    </script>
+</body>
 </html>

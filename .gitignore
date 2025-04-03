@@ -22,3 +22,7 @@ Thumbs.db # Windows
 *.egg-info/
 dist/
 build/
+
+static/profile_photos/*
+static/qrcodes/*
+static/gallery/*/* 
