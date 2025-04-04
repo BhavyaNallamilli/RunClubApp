@@ -12,7 +12,6 @@ import re
 import os
 import qrcode
 
-UPLOAD_FOLDER = os.path.join('static','profile_photos')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 QR_CODE_FOLDER = os.path.join('static','qrcodes')
 
