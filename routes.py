@@ -14,10 +14,18 @@ QR_CODE_FOLDER=os.path.join('static','qrcodes')
 
 @login_manager.user_loader
 def load_user(user_id):
+    """
+    Callback function required by Flask-Login to load a user from the database.
+    It retrieves a User object based on the provided user ID.
+    """
     return User.query.get(int(user_id))
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    """
+    Route for the user login page.
+    Handles both displaying the login form (GET request) and processing login attempts (POST request).
+    """
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -34,6 +42,10 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """
+    Route for the user registration page.
+    Handles both displaying the registration form (GET request) and processing new user registrations (POST request).
+    """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -89,26 +101,44 @@ def register():
 
 @app.route('/logout')
 def logout():
+    """
+    Route to log the current user out of the application.
+    """
     logout_user()
     return redirect(url_for('login'))
 
 @app.route("/")
 @login_required
 def home():
+    """
+    Route for the application's home page.
+    Requires the user to be logged in to access.
+    Fetches the user's profile information to display.
+    """
     profile = Profile.query.filter_by(id=current_user.id).first()
     return render_template('home.html', profile=profile)
 
 
 @app.route("/profile")
 def profile_page():
+    """
+    Route for displaying the user's profile page.
+    Fetches the user's profile information.
+    Currently, it only handles GET requests to display the profile.
+    """
     profile = Profile.query.filter_by(id=current_user.id).first()
     print(profile.photo) 
     if request.method == 'POST':
         db.session.commit()
         return redirect(url_for('profile_page'))
     return render_template('profile.html', profile=profile, username=current_user.username)
+
 @app.route("/runs")
 def runs_page():
+    """
+    Route to display the page listing available runs.
+    Fetches all run events from the database.
+    """
     with app.app_context():
         runs=Run.query.all()
     return render_template("runs.html",runs=runs)
@@ -116,12 +146,20 @@ def runs_page():
 
 @app.route("/events")
 def events_page():
+    """
+    Route to display the page listing upcoming events.
+    Fetches all event records from the database.
+    """
     with app.app_context():
         upcoming_events = Event.query.all()
     return render_template("events.html", upcoming_events=upcoming_events)
 
 @app.route("/sports")
 def sports_page():
+    """
+    Route to display the page listing available sports activities.
+    Fetches all sport records from the database.
+    """
     with app.app_context():
         sports = Sport.query.all()
     return render_template("sports.html", sports=sports)
@@ -129,12 +167,22 @@ def sports_page():
 @app.route("/tracker")
 @login_required
 def tracker():
+    """
+    Route for the user's run tracker page.
+    Requires the user to be logged in.
+    Fetches all available runs and the IDs of the runs the current user has selected.
+    """
     runs = Run.query.all()
     user_runs_ids = [run.id for run in current_user.runs]
     return render_template('tracker.html', runs=runs, user_runs_ids=user_runs_ids)
 
 @app.route('/save_selected_runs', methods=['POST'])
 def save_selected_runs():
+    """
+    Route to handle saving the user's selected runs.
+    Accepts a POST request with JSON data containing the selected run weeks.
+    Updates the user's associated runs in the database.
+    """
     data = request.get_json()
     selected_weeks = data['selectedWeeks']
 
@@ -153,6 +201,10 @@ def save_selected_runs():
 
 @app.route("/gallery")
 def gallery_page():
+    """
+    Route to display the image gallery, categorized by Runs, Events, and Sports.
+    Fetches images from the database based on their category.
+    """
     Runs = Gallery.query.filter_by(category="Runs").all()
     Events = Gallery.query.filter_by(category="Events").all()
     Sports = Gallery.query.filter_by(category="Sports").all()
@@ -161,6 +213,10 @@ def gallery_page():
 
 @app.route('/payments_qr/<int:event_id>')
 def payments_qr(event_id):
+    """
+    Route to display the payment QR code for a specific event.
+    Fetches the event details and generates the UPI QR code URL.
+    """
     event = Event.query.get(event_id)
     qr_code_url = generate_upi_qrcode()
     return render_template('payments_qr.html', event=event, qr_code_url=qr_code_url)
@@ -169,6 +225,11 @@ def payments_qr(event_id):
 @login_required
 @admin_required
 def update_upi():
+    """
+    Route for administrators to update the stored UPI ID.
+    Handles both displaying the update form (GET request) and processing the update (POST request).
+    Requires the user to be logged in as an admin.
+    """
     upi_record = UPI.query.first()
     if request.method == 'POST':
         new_upi_id = request.form.get('upi_id')
@@ -191,6 +252,11 @@ def update_upi():
 @login_required
 @admin_required
 def add_run():
+    """
+    Route for administrators to add a new run event.
+    Handles both displaying the add run form (GET request) and processing the submission (POST request).
+    Requires the user to be logged in as an admin.
+    """
     if request.method == 'POST':
         name = request.form.get('name')
         week = request.form.get('week')
@@ -209,6 +275,11 @@ def add_run():
 @login_required
 @admin_required
 def add_event():
+    """
+    Route for administrators to add a new event.
+    Handles both displaying the add event form (GET request) and processing the submission (POST request).
+    Requires the user to be logged in as an admin.
+    """
     if request.method == 'POST':
         name = request.form.get('name')
         price = request.form.get('price')
@@ -231,6 +302,11 @@ def add_event():
 @login_required
 @admin_required
 def add_sport():
+    """
+    Route for administrators to add a new sport activity.
+    Handles both displaying the add sport form (GET request) and processing the submission (POST request).
+    Requires the user to be logged in as an admin.
+    """
     if request.method == 'POST':
         name = request.form.get('name')
         venue = request.form.get('venue')
@@ -247,6 +323,11 @@ def add_sport():
 @login_required
 @admin_required
 def add_gallery():
+    """
+    Route for administrators to add new images to the gallery.
+    Handles both displaying the add gallery form (GET request) and processing the image uploads (POST request).
+    Requires the user to be logged in as an admin.
+    """
     if request.method == 'POST':
         category = request.form.get('category')
         files = request.files.getlist('images')  
